@@ -6,6 +6,7 @@ use App\Article;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 
 class ArticleController extends Controller
@@ -31,7 +32,7 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        //
+       return view('admin.posts.create');
     }
 
     /**
@@ -42,7 +43,29 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+
+        $request->validate([
+            "title" => "required",
+            "slug" => "required|unique:articles",
+            "content" => "required",
+            "image" => "image"
+        ]);
+
+        // $path = Storage::disk('public')->put('images', $data["image"]);
+        $filename_original = $data['image']->getClientOriginalName();
+        $path = Storage::disk('public')->putFileAs('images', $data['image'], $filename_original);
+ 
+        $newArticle = new Article;
+        $newArticle->user_id = Auth::id(); 
+        $newArticle->title = $data["title"];
+        $newArticle->slug = $data["slug"];
+        $newArticle->content = $data["content"];
+        $newArticle->image = $path;
+
+        $newArticle->save();
+
+        return redirect()->route('admin.posts.show', $newArticle->slug);
     }
 
     /**
@@ -63,9 +86,10 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function edit(Article $article)
+    public function edit($slug)
     {
-        //
+        $article = Article::where('slug', $slug)->first();
+        return view('admin.posts.edit', compact('article')); 
     }
 
     /**

@@ -20,5 +20,6 @@
 
             </tbody>
           </table>
+          <img src="{{asset('storage/'.$article->image)}} " alt="">
     </div>
 @endsection
