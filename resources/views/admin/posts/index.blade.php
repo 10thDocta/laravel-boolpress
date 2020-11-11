@@ -2,6 +2,8 @@
 
 @section('content')
     <div class="container">
+      <h1>POSTS INDEX</h1>
+
       <a href="{{route('admin.posts.create')}} "><button class="btn btn-light">Crea nuovo</button></a>
         <table class="table">
             <thead>

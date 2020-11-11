@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Tag;
-use Illuminate\Http\Request;
+
 use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 
 class TagController extends Controller
@@ -16,7 +19,8 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
+        $tags = Tag::all();
+        return view('admin.tags.index', compact('tags'));
     }
 
     /**
@@ -37,7 +41,18 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        // dd($data["tag"]);
+        
+        foreach ($data["tag"] as $tag) {
+            if ($tag != null) {
+                $newTag = new Tag;
+                $newTag->name = $tag;
+                $newTag->save();
+            }
+        }
+
+        return redirect()->route('admin.tags.index');
     }
 
     /**
@@ -57,9 +72,10 @@ class TagController extends Controller
      * @param  \App\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function edit(Tag $tag)
+    public function edit($id)
     {
-        //
+        $tag = Tag::find($id);
+        return view('admin.tags.edit', compact('tag'));
     }
 
     /**
@@ -69,9 +85,20 @@ class TagController extends Controller
      * @param  \App\Tag  $tag
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Tag $tag)
+    public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+        // dd($data);
+
+        $request->validate([
+            "tag" => [
+                "required",
+                "max:20",
+                Rule::unique('tags', 'name')->ignore($id)
+                ]
+        ]);
+
+        return redirect()->route('admin.tags.index');
     }
 
     /**

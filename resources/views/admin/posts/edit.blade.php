@@ -8,6 +8,8 @@
 
   <div class="container">
 
+      <h1>MODIFICA ARTICOLO</h1>
+
       <form action="{{route('admin.posts.update', $article)}}" method="POST" enctype="multipart/form-data">
 
         @csrf
@@ -27,6 +29,48 @@
           <label for="content">content</label>
           <textarea type="text" class="form-control" name="content" id="content" placeholder="Contenuto">{{old('content') ?? $article->content}}</textarea>
         </div>
+
+        {{-- Tag Group --}}
+        <div class="form-group">
+          <label for="tag">Tag</label>
+          <select class="form-control" name="tag[]" id="tag">
+            <option value="null">Scegli un tag</option>
+            @foreach ($tags as $tag)
+              <option value="{{$tag->id}}">{{$tag->name}}</option>
+            @endforeach
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="tag">Tag</label>
+          <select class="form-control" name="tag[]" id="tag">
+            <option value="null">Scegli un tag</option>
+            @foreach ($tags as $tag)
+              <option value="{{$tag->id}}">{{$tag->name}}</option>
+            @endforeach
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="tag">Tag</label>
+          <select class="form-control" name="tag[]" id="tag">
+            <option value="null">Scegli un tag</option>
+            @foreach ($tags as $tag)
+              <option value="{{$tag->id}}">{{$tag->name}}</option>
+            @endforeach
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="tag">Tag</label>
+          <select class="form-control" name="tag[]" id="tag">
+            <option value="null">Scegli un tag</option>
+            @foreach ($tags as $tag)
+              <option value="{{$tag->id}}">{{$tag->name}}</option>
+            @endforeach
+          </select>
+        </div>
+        {{-- /Tag Group --}}
 
         <div class="form-group">
           <label for="image">Immagine</label>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Article;
+use App\Tag;
 
 use App\Http\Controllers\Controller;
 
@@ -35,7 +36,8 @@ class ArticleController extends Controller
      */
     public function create()
     {
-       return view('admin.posts.create');
+        $tags = Tag::all();
+        return view('admin.posts.create', compact('tags'));
     }
 
     /**
@@ -47,6 +49,8 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        // dd($data);
+        // dd($data["tag"]);
 
         $request->validate([
             "title" => "required",
@@ -56,17 +60,35 @@ class ArticleController extends Controller
         ]);
 
         // $path = Storage::disk('public')->put('images', $data["image"]);
-        $filename_original = $data['image']->getClientOriginalName();
-        $path = Storage::disk('public')->putFileAs('images', $data['image'], $filename_original);
  
         $newArticle = new Article;
         $newArticle->user_id = Auth::id(); 
         $newArticle->title = $data["title"];
         $newArticle->slug = $data["slug"];
         $newArticle->content = $data["content"];
-        $newArticle->image = $path;
 
-        $newArticle->save();
+        if (!isset($data['image'])) {
+            $newArticle->save();        
+        } else {
+            $filename_original = $data['image']->getClientOriginalName();
+            $path = Storage::disk('public')->putFileAs('images', $data['image'], $filename_original);
+
+            $newArticle->image = $path;
+            
+            $newArticle->save();
+        }
+
+
+        if (count($data["tag"]) > 0) {
+            $tags = [];
+            foreach ($data["tag"] as $tag) {
+                if ($tag != "null") {
+                    $tags[] = $tag;
+                }
+            }
+
+            $newArticle->tags()->sync($tags);
+        }
 
         return redirect()->route('admin.posts.show', $newArticle->slug);
     }
@@ -92,7 +114,8 @@ class ArticleController extends Controller
     public function edit($slug)
     {
         $article = Article::where('slug', $slug)->first();
-        return view('admin.posts.edit', compact('article')); 
+        $tags = Tag::all();
+        return view('admin.posts.edit', compact('article', 'tags')); 
     }
 
 
@@ -131,6 +154,17 @@ class ArticleController extends Controller
             $path = Storage::disk('public')->putFileAs('images', $data['image'], $filename_original);
             $article->image = $path;
             $article->update();
+        }
+
+        if (count($data["tag"]) > 0) {
+            $tags = [];
+            foreach ($data["tag"] as $tag) {
+                if ($tag != "null") {
+                    $tags[] = $tag;
+                }
+            }
+
+            $article->tags()->sync($tags);
         }
 
         return redirect()->route('admin.posts.show', $article->slug);

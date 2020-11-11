@@ -29,10 +29,9 @@
           <input type="text" class="form-control" name="tag[]" id="tag" placeholder="Inserisci il nuovo tag">
         </div>
 
-        
-
           <button type="submit" class="btn btn-primary">Salva</button>
-          <a class="btn btn-secondary" href="{{route('admin.posts.index')}} ">Indietro</a>
+          
+          <a class="btn btn-secondary" href="{{route('admin.tags.index')}} ">Indietro</a>
 
       </form>
 
