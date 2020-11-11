@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Article;
-use Illuminate\Http\Request;
+
 use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 
 class ArticleController extends Controller
@@ -92,6 +95,7 @@ class ArticleController extends Controller
         return view('admin.posts.edit', compact('article')); 
     }
 
+
     /**
      * Update the specified resource in storage.
      *
@@ -99,10 +103,39 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, $id)
     {
-        //
+        $data = $request->all();
+        // dd($data);
+
+        $request->validate([
+            "title" => "required",
+            'slug' => [
+                'required',
+                Rule::unique('articles', 'slug')->ignore($id)
+            ],
+            "content" => "required",
+            "image" => "image"
+        ]);
+ 
+        $article = Article::find($id); 
+        $article->user_id = Auth::id(); 
+        $article->title = $data["title"];
+        $article->slug = $data["slug"];
+        $article->content = $data["content"];
+
+        if (!isset($data['image'])) {
+            $article->update();            
+        } else {
+            $filename_original = $data['image']->getClientOriginalName();
+            $path = Storage::disk('public')->putFileAs('images', $data['image'], $filename_original);
+            $article->image = $path;
+            $article->update();
+        }
+
+        return redirect()->route('admin.posts.show', $article->slug);
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -110,8 +143,11 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Article $article)
+    public function destroy($id)
     {
-        //
+        $article = Article::find($id);
+        $article->delete();
+
+        return redirect()->route('admin.posts.index');
     }
 }

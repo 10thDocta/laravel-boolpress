@@ -4,30 +4,32 @@
   
   <div class="container">
 
-      <form action="{{route('admin.posts.store')}}" method="POST" enctype="multipart/form-data">
+      <form action="{{route('admin.tags.store')}}" method="POST">
 
         @csrf
         @method("POST")
 
         <div class="form-group">
-          <label for="title">Titolo</label>
-          <input type="text" class="form-control" name="title" id="title" placeholder="Inserisci il titolo">
+          <label for="tag">Tag</label>
+          <input type="text" class="form-control" name="tag[]" id="tag" placeholder="Inserisci il nuovo tag">
         </div>
 
         <div class="form-group">
-          <label for="slug">Slug</label>
-          <input type="text" class="form-control" name="slug" id="slug" placeholder="Slug">
+          <label for="tag">Tag</label>
+          <input type="text" class="form-control" name="tag[]" id="tag" placeholder="Inserisci il nuovo tag">
         </div>
 
         <div class="form-group">
-          <label for="content">content</label>
-          <textarea type="text" class="form-control" name="content" id="content" placeholder="Contenuto"></textarea>
+          <label for="tag">Tag</label>
+          <input type="text" class="form-control" name="tag[]" id="tag" placeholder="Inserisci il nuovo tag">
         </div>
 
         <div class="form-group">
-          <label for="image">Immagine</label>
-          <input type="file" class="form-control" name="image" id="image" placeholder="Inserisci l'immagine" accept="image/*">
+          <label for="tag">Tag</label>
+          <input type="text" class="form-control" name="tag[]" id="tag" placeholder="Inserisci il nuovo tag">
         </div>
+
+        
 
           <button type="submit" class="btn btn-primary">Salva</button>
           <a class="btn btn-secondary" href="{{route('admin.posts.index')}} ">Indietro</a>

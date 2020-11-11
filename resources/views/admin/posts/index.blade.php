@@ -21,7 +21,6 @@
                     <td>
                         <a href="{{route('admin.posts.show', $article->slug)}} ">Visualizza</a>
                         <a href="{{route('admin.posts.edit', $article->slug)}}">Modifica</a>
-                        <a href="{{route('admin.posts.destroy', $article->slug)}}">Elimina</a>
                     </td>
                   </tr>
               @endforeach
